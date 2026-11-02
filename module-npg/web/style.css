@@ -1,0 +1,1040 @@
+/* ============================================================
+   NPG-DRONE BCI AVIONICS DASHBOARD STYLING
+   ============================================================ */
+
+:root {
+  --bg-main: #060911;
+  --bg-panel: rgba(13, 20, 36, 0.75);
+  --bg-panel-border: rgba(0, 240, 255, 0.16);
+  --bg-card: rgba(18, 28, 50, 0.6);
+  --bg-hover: rgba(0, 240, 255, 0.1);
+
+  --color-cyan: #00f0ff;
+  --color-cyan-glow: rgba(0, 240, 255, 0.45);
+  --color-purple: #c084fc;
+  --color-purple-glow: rgba(192, 132, 252, 0.4);
+  --color-green: #10b981;
+  --color-green-glow: rgba(16, 185, 129, 0.5);
+  --color-amber: #f59e0b;
+  --color-red: #ef4444;
+  --color-red-glow: rgba(239, 68, 68, 0.5);
+
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --font-display: 'Orbitron', monospace, sans-serif;
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --rotor-speed: 0s;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  user-select: none;
+}
+
+/* Background HUD Grid and Scanlines */
+.hud-grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hud-scanline {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.6;
+}
+
+.app-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   TOP BAR & NAVIGATION
+   ============================================================ */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 12px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-icon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--color-cyan);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-cyan);
+}
+
+.brand-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.pulse-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 12px;
+  border: 1px solid var(--color-cyan);
+  opacity: 0.6;
+  animation: pulse-border 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+@keyframes pulse-border {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 12px var(--color-cyan-glow);
+}
+
+.brand-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.system-status-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background: rgba(18, 28, 50, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  box-shadow: 0 0 8px var(--color-cyan);
+}
+
+.status-label {
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.status-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.mode-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-cyan);
+  background: rgba(0, 240, 255, 0.12);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.btn-icon {
+  background: rgba(18, 28, 50, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.btn-icon:hover {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--color-cyan);
+}
+
+/* ============================================================
+   HERO STATUS & TAKEOFF READINESS BANNER
+   ============================================================ */
+.hero-banner-container {
+  width: 100%;
+}
+
+.readiness-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.35rem 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* State 1: Relaxed / Waiting */
+.readiness-banner.state-relaxed {
+  background: linear-gradient(135deg, rgba(13, 20, 36, 0.85) 0%, rgba(20, 32, 58, 0.75) 100%);
+  border-color: rgba(0, 240, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.readiness-banner.state-relaxed .icon-idle { display: block; color: var(--color-cyan); }
+.readiness-banner.state-relaxed .icon-active { display: none; }
+.readiness-banner.state-relaxed #banner-headline { color: #e2e8f0; }
+
+/* State 2: MUSCLE ACTIVATED -> READY TO TAKE OFF (The WOW state!) */
+.readiness-banner.state-activated {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 78, 59, 0.6) 100%), #051a14;
+  border-color: var(--color-green);
+  box-shadow: 0 0 35px var(--color-green-glow), inset 0 0 25px rgba(16, 185, 129, 0.2);
+  animation: banner-glow-pulse 1.6s ease-in-out infinite alternate;
+}
+
+.readiness-banner.state-activated .icon-idle { display: none; }
+.readiness-banner.state-activated .icon-active { 
+  display: block; 
+  color: #10b981; 
+  animation: lightning-jump 0.8s ease-in-out infinite; 
+}
+
+.readiness-banner.state-activated #banner-headline {
+  color: #00ffaa;
+  text-shadow: 0 0 16px rgba(0, 255, 170, 0.7);
+}
+
+.readiness-banner.state-activated .state-flight-pill {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: var(--color-green);
+}
+
+.readiness-banner.state-activated .flight-state-badge {
+  color: #00ffaa;
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.8);
+}
+
+/* State 3: Taking Off / Airborne */
+.readiness-banner.state-flying {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.25) 0%, rgba(14, 116, 144, 0.6) 100%), #041d27;
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 35px var(--color-cyan-glow);
+}
+
+@keyframes banner-glow-pulse {
+  0% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.4), inset 0 0 15px rgba(16, 185, 129, 0.2); }
+  100% { box-shadow: 0 0 45px rgba(16, 185, 129, 0.7), inset 0 0 30px rgba(16, 185, 129, 0.4); }
+}
+
+@keyframes lightning-jump {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px #10b981); }
+  50% { transform: scale(1.18); filter: drop-shadow(0 0 12px #00ffaa); }
+}
+
+.banner-left-indicator {
+  margin-right: 1.5rem;
+}
+
+.indicator-icon-wrap {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.indicator-icon-wrap svg {
+  width: 32px;
+  height: 32px;
+}
+
+.banner-center-content {
+  flex: 1;
+}
+
+.banner-micro-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.sys-tag {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--color-cyan);
+  font-weight: 700;
+}
+
+.sys-timestamp {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.banner-main-headline {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.banner-sub-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.state-flight-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  padding: 0.65rem 1.25rem;
+  background: rgba(18, 28, 50, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  min-width: 170px;
+}
+
+.flight-state-label {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  font-family: var(--font-display);
+  letter-spacing: 0.1em;
+}
+
+.flight-state-badge {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-cyan);
+}
+
+/* ============================================================
+   MAIN DASHBOARD GRID
+   ============================================================ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.card {
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 16px;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-icon {
+  font-size: 1.35rem;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+}
+
+.card-subtitle {
+  font-size: 0.74rem;
+  color: var(--text-dim);
+}
+
+.badge-threshold {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-amber);
+  background: rgba(245, 158, 11, 0.12);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.flight-mode-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.flight-mode-tag.armed {
+  color: var(--color-green);
+  border-color: var(--color-green);
+  background: rgba(16, 185, 129, 0.15);
+}
+
+/* ============================================================
+   MUSCLE METERS & GAUGES
+   ============================================================ */
+.muscle-meters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.muscle-meter-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.muscle-meter-card.active {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 16px var(--color-cyan-glow);
+}
+
+#meter-card-right.active {
+  border-color: var(--color-purple);
+  box-shadow: 0 0 16px var(--color-purple-glow);
+}
+
+.meter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.muscle-ident {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.channel-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.ch-left {
+  background: var(--color-cyan);
+  box-shadow: 0 0 8px var(--color-cyan);
+}
+
+.ch-right {
+  background: var(--color-purple);
+  box-shadow: 0 0 8px var(--color-purple);
+}
+
+.muscle-name {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.muscle-status-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+}
+
+.muscle-status-badge.contracted {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.meter-numeric-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 0.65rem;
+}
+
+.meter-large-val {
+  font-family: var(--font-mono);
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.meter-unit {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+
+.meter-progress-track {
+  position: relative;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 9999px;
+  overflow: visible;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.meter-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.08s ease-out;
+}
+
+.ch-left-fill {
+  background: linear-gradient(90deg, #0088cc, var(--color-cyan));
+  box-shadow: 0 0 10px var(--color-cyan);
+}
+
+.ch-right-fill {
+  background: linear-gradient(90deg, #7c3aed, var(--color-purple));
+  box-shadow: 0 0 10px var(--color-purple);
+}
+
+.meter-threshold-marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--color-amber);
+  box-shadow: 0 0 6px var(--color-amber);
+}
+
+.marker-tag {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  font-family: var(--font-mono);
+  color: var(--color-amber);
+}
+
+.meter-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+
+/* ============================================================
+   REAL-TIME OSCILLOSCOPE
+   ============================================================ */
+.oscilloscope-wrapper {
+  background: #040711;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 12px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scope-legend {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-line-dashed {
+  width: 14px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--color-amber), var(--color-amber) 3px, transparent 3px, transparent 6px);
+}
+
+.legend-rate {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+}
+
+.canvas-container {
+  width: 100%;
+  height: 220px;
+  position: relative;
+}
+
+#scopeCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ============================================================
+   RIGHT COLUMN: DRONE FLIGHT VISUALIZER
+   ============================================================ */
+.drone-viewport {
+  position: relative;
+  height: 260px;
+  background: radial-gradient(circle at center, #0f1c38 0%, #050a16 100%);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.horizon-lines {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.horizon-pitch-line {
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 240, 255, 0.15);
+}
+
+.horizon-pitch-line.line-center {
+  background: rgba(0, 240, 255, 0.4);
+  height: 1.5px;
+}
+
+/* Drone 3D/2D Rig */
+.drone-rig {
+  position: relative;
+  width: 190px;
+  height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.drone-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Diagonal Cross Arms */
+.drone-frame::before,
+.drone-frame::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 6px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 3px;
+  transform-origin: center;
+}
+
+.drone-frame::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.drone-frame::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Central Fuselage */
+.drone-center-body {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 54px;
+  background: #0f172a;
+  border: 2px solid var(--color-cyan);
+  border-radius: 14px;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px var(--color-cyan-glow);
+}
+
+.drone-led {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px var(--color-cyan);
+}
+
+.drone-arrow {
+  font-family: var(--font-display);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--color-cyan);
+  margin-top: 3px;
+  letter-spacing: 0.05em;
+}
+
+/* Rotor Pods */
+.drone-arm {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  z-index: 4;
+}
+
+.arm-fl { top: 12px; left: 12px; }
+.arm-fr { top: 12px; right: 12px; }
+.arm-rr { bottom: 12px; right: 12px; }
+.arm-rl { bottom: 12px; left: 12px; }
+
+.rotor-pod {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rotor-blade {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px dashed rgba(0, 240, 255, 0.4);
+  animation-duration: var(--rotor-speed, 0s);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.rotor-cw {
+  animation-name: spin-cw;
+}
+
+.rotor-ccw {
+  animation-name: spin-ccw;
+}
+
+@keyframes spin-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-ccw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.motor-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  font-weight: 700;
+}
+
+.thrust-wash-cone {
+  position: absolute;
+  bottom: -20px;
+  width: 120px;
+  height: 35px;
+  background: radial-gradient(ellipse at top, rgba(0, 240, 255, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* HUD Overlay Badges */
+.hud-angle-left,
+.hud-angle-right,
+.hud-alt-badge {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  background: rgba(5, 10, 22, 0.7);
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+.hud-angle-left { top: 12px; left: 12px; }
+.hud-angle-right { top: 12px; right: 12px; }
+.hud-alt-badge { bottom: 12px; left: 12px; }
+
+.hud-angle-left span,
+.hud-angle-right span,
+.hud-alt-badge span {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Drone Telemetry Metrics */
+.drone-telemetry-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.telem-box {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}
+
+.telem-label {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+
+.telem-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.text-green {
+  color: var(--color-green);
+}
+
+/* ============================================================
+   BOTTOM CONTROLS DECK
+   ============================================================ */
+.controls-deck {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr 1fr;
+  gap: 1.25rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  backdrop-filter: blur(16px);
+}
+
+.controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ctrl-group-title {
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  margin-bottom: 0.2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(18, 28, 50, 0.8);
+  color: var(--text-main);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-cyan);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-mode.active {
+  background: rgba(0, 240, 255, 0.18);
+  border-color: var(--color-cyan);
+  color: var(--color-cyan);
+  box-shadow: 0 0 12px var(--color-cyan-glow);
+}
+
+.key-hint {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-dim);
+}
+
+.btn-highlight {
+  border-color: var(--color-green);
+  background: rgba(16, 185, 129, 0.18);
+  color: #10b981;
+}
+
+.btn-highlight:hover {
+  background: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 12px var(--color-green-glow);
+}
+
+.btn-arm {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--color-amber);
+  color: var(--color-amber);
+}
+
+.btn-arm.armed {
+  background: var(--color-amber);
+  color: #000;
+  font-weight: 800;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+}
+
+.btn-takeoff {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--color-cyan);
+  color: var(--color-cyan);
+  font-weight: 700;
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-red);
+  color: var(--color-red);
+}
+
+.btn-danger:hover {
+  background: var(--color-red);
+  color: #ffffff;
+  box-shadow: 0 0 15px var(--color-red-glow);
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .controls-deck {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,19 @@
+[project]
+name = "npg-dronee"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "bleak>=3.0.2",
+    "matplotlib>=3.11.2",
+    "pandas>=2.2.0,<3",
+    "scipy>=1.17.1",
+]
+
+[project.scripts]
+npg-dronee = "npg_dronee:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"

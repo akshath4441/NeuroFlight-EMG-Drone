@@ -1,0 +1,19 @@
+{
+    "sample_rate": 500,
+    "confirmation_samples": 100,
+    "confirmation_time_seconds": 0.2,
+    "smoothing_window_samples": 10,
+    "dominance_ratio": 1.25,
+    "left": {
+        "baseline": 4.525369655603009,
+        "active_level": 115.36747898891042,
+        "threshold": 43.3201079222606,
+        "release_threshold": 31.68168644226332
+    },
+    "right": {
+        "baseline": 5.373846976611191,
+        "active_level": 113.77077926620251,
+        "threshold": 43.31277327796815,
+        "release_threshold": 31.931095387561058
+    }
+}

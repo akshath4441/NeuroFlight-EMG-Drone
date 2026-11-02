@@ -1,0 +1,25 @@
+# ==========================================
+# NPG Lite EMG Drone Project
+# Python 3.11
+# ==========================================
+
+# Numerical computing
+numpy==1.26.4
+
+# Data processing
+pandas==2.2.2
+
+# Signal processing
+scipy==1.17.1
+
+# EMG graphs
+matplotlib==3.11.2
+
+# NPG Lite BLE communication
+bleak==3.0.2
+
+# Crazyflie/LiteWing communication dependency
+cflib==0.1.28
+
+# Keyboard emergency-stop / manual controls
+keyboard==0.13.5

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NPG-Lite EMG Drone Avionics Deck</title>
+  <meta name="description" content="Real-time EMG Neuro-Muscular Drone Interface and Flight Readiness Telemetry Dashboard">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="hud-scanline"></div>
+  <div class="hud-grid-bg"></div>
+
+  <div class="app-container">
+    <!-- TOP NAVIGATION BAR -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="brand-icon">
+          <div class="pulse-ring"></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 19 8.5 12 15 5 8.5 12 2"></polygon>
+            <polygon points="12 9 19 15.5 12 22 5 15.5 12 9"></polygon>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">NPG-DRONE BCI AVIONICS</h1>
+          <p class="brand-subtitle">Neuro-Muscular EMG Flight Deck &bull; LiteWing Interface</p>
+        </div>
+      </div>
+
+      <!-- STATUS BADGES -->
+      <div class="system-status-pills">
+        <div class="status-pill" id="pill-ble">
+          <span class="status-dot"></span>
+          <span class="status-label">EMG SENSOR:</span>
+          <span class="status-val" id="val-ble-status">SIMULATOR</span>
+        </div>
+        <div class="status-pill" id="pill-drone">
+          <span class="status-dot"></span>
+          <span class="status-label">LITEWING:</span>
+          <span class="status-val" id="val-drone-status">STANDBY</span>
+        </div>
+        <div class="status-pill" id="pill-mode">
+          <span class="mode-tag" id="val-active-mode">REPLAY</span>
+        </div>
+        <button id="btn-sound-toggle" class="btn-icon" title="Toggle Audio Chime">
+          <span id="sound-icon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- HERO PROMINENT READINESS BANNER -->
+    <section class="hero-banner-container">
+      <div id="readiness-banner" class="readiness-banner state-relaxed">
+        <div class="banner-glow-effect"></div>
+        <div class="banner-left-indicator">
+          <div class="indicator-icon-wrap" id="banner-icon-wrap">
+            <svg class="state-icon icon-idle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <svg class="state-icon icon-active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="banner-center-content">
+          <div class="banner-micro-header">
+            <span class="sys-tag">FLIGHT READINESS TELEMETRY</span>
+            <span class="sys-timestamp" id="live-clock">--:--:--</span>
+          </div>
+          <div class="banner-main-headline" id="banner-headline">
+            WAITING FOR MUSCLE ACTIVATION...
+          </div>
+          <div class="banner-sub-text" id="banner-subtext">
+            Contract left or right forearm muscle to trigger drone flight sequence
+          </div>
+        </div>
+
+        <div class="banner-right-action">
+          <div class="state-flight-pill" id="flight-state-pill">
+            <span class="flight-state-label">DRONE STATUS</span>
+            <span class="flight-state-badge" id="flight-state-text">IDLE / STANDBY</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN DASHBOARD GRID -->
+    <main class="dashboard-grid">
+
+      <!-- LEFT COLUMN: MUSCLE SENSORS & WAVEFORMS -->
+      <section class="card panel-emg">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">⚡</span>
+            <div>
+              <h2 class="card-title">EMG Muscle Channels (RMS Telemetry)</h2>
+              <p class="card-subtitle">Sampling 500 Hz &bull; Notch 50 Hz &bull; RMS Window 100 ms</p>
+            </div>
+          </div>
+          <div class="card-actions">
+            <span class="badge-threshold">THRESHOLD: <strong id="lbl-threshold">43.3 µV</strong></span>
+          </div>
+        </div>
+
+        <!-- MUSCLE GAUGES & METERS -->
+        <div class="muscle-meters-grid">
+          <!-- LEFT CHANNEL -->
+          <div class="muscle-meter-card" id="meter-card-left">
+            <div class="meter-header">
+              <div class="muscle-ident">
+                <span class="channel-indicator ch-left"></span>
+                <span class="muscle-name">CH 0: LEFT FOREARM</span>
+              </div>
+              <span class="muscle-status-badge" id="badge-left">RESTING</span>
+            </div>
+            
+            <div class="meter-numeric-row">
+              <span class="meter-large-val" id="val-left-rms">0.0</span>
+              <span class="meter-unit">µV RMS</span>
+            </div>
+
+            <!-- Dynamic Bar -->
+            <div class="meter-progress-track">
+              <div class="meter-progress-fill ch-left-fill" id="bar-left-fill" style="width: 5%;"></div>
+              <div class="meter-threshold-marker" id="marker-left-thresh" style="left: 36%;">
+                <span class="marker-tag">TRIG</span>
+              </div>
+            </div>
+
+            <div class="meter-limits">
+              <span>Base: 4.5 µV</span>
+              <span>Trigger: 43.3 µV</span>
+              <span>Max: 120 µV</span>
+            </div>
+          </div>
+
+          <!-- RIGHT CHANNEL -->
+          <div class="muscle-meter-card" id="meter-card-right">
+            <div class="meter-header">
+              <div class="muscle-ident">
+                <span class="channel-indicator ch-right"></span>
+                <span class="muscle-name">CH 1: RIGHT FOREARM</span>
+              </div>
+              <span class="muscle-status-badge" id="badge-right">RESTING</span>
+            </div>
+            
+            <div class="meter-numeric-row">
+              <span class="meter-large-val" id="val-right-rms">0.0</span>
+              <span class="meter-unit">µV RMS</span>
+            </div>
+
+            <!-- Dynamic Bar -->
+            <div class="meter-progress-track">
+              <div class="meter-progress-fill ch-right-fill" id="bar-right-fill" style="width: 5%;"></div>
+              <div class="meter-threshold-marker" id="marker-right-thresh" style="left: 36%;">
+                <span class="marker-tag">TRIG</span>
+              </div>
+            </div>
+
+            <div class="meter-limits">
+              <span>Base: 5.4 µV</span>
+              <span>Trigger: 43.3 µV</span>
+              <span>Max: 120 µV</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DUAL-CHANNEL REAL-TIME OSCILLOSCOPE -->
+        <div class="oscilloscope-wrapper">
+          <div class="scope-legend">
+            <div class="legend-item"><span class="legend-dot ch-left"></span> Left Muscle Signal</div>
+            <div class="legend-item"><span class="legend-dot ch-right"></span> Right Muscle Signal</div>
+            <div class="legend-item"><span class="legend-line-dashed"></span> Activation Threshold</div>
+            <div class="legend-rate" id="scope-fps">60 FPS</div>
+          </div>
+          <div class="canvas-container">
+            <canvas id="scopeCanvas" width="800" height="220"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: DRONE AVIONICS & ATTITUDE VISUALIZER -->
+      <section class="card panel-drone">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">🚁</span>
+            <div>
+              <h2 class="card-title">LiteWing Flight Visualizer</h2>
+              <p class="card-subtitle">Real-time attitude & rotor response to muscle signals</p>
+            </div>
+          </div>
+          <div class="flight-mode-tag" id="lbl-armed-tag">DISARMED</div>
+        </div>
+
+        <!-- 3D/2D DRONE ATTITUDE DISPLAY -->
+        <div class="drone-viewport">
+          <div class="horizon-lines">
+            <div class="horizon-pitch-line line-high"></div>
+            <div class="horizon-pitch-line line-center"></div>
+            <div class="horizon-pitch-line line-low"></div>
+          </div>
+
+          <div class="drone-rig" id="drone-rig">
+            <!-- Quadcopter Silhouette & Rotors -->
+            <div class="drone-frame">
+              <!-- Central Hub -->
+              <div class="drone-center-body">
+                <div class="drone-led" id="drone-core-led"></div>
+                <div class="drone-arrow">▲ FRONT</div>
+              </div>
+
+              <!-- Motor Arms and Rotors -->
+              <!-- Front-Left (M1) -->
+              <div class="drone-arm arm-fl">
+                <div class="rotor-pod">
+                  <div class="rotor-blade rotor-cw" id="rotor-1"></div>
+                  <span class="motor-label">M1</span>
+                </div>
+              </div>
+
+              <!-- Front-Right (M2) -->
+              <div class="drone-arm arm-fr">
+                <div class="rotor-pod">
+                  <div class="rotor-blade rotor-ccw" id="rotor-2"></div>
+                  <span class="motor-label">M2</span>
+                </div>
+              </div>
+
+              <!-- Rear-Right (M3) -->
+              <div class="drone-arm arm-rr">
+                <div class="rotor-pod">
+                  <div class="rotor-blade rotor-cw" id="rotor-3"></div>
+                  <span class="motor-label">M3</span>
+                </div>
+              </div>
+
+              <!-- Rear-Left (M4) -->
+              <div class="drone-arm arm-rl">
+                <div class="rotor-pod">
+                  <div class="rotor-blade rotor-ccw" id="rotor-4"></div>
+                  <span class="motor-label">M4</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thrust / Wash Glow beneath drone -->
+            <div class="thrust-wash-cone" id="thrust-wash"></div>
+          </div>
+
+          <!-- Attitude Angle HUD Overlays -->
+          <div class="hud-angle-left">ROLL: <span id="val-roll">0.0°</span></div>
+          <div class="hud-angle-right">THRUST: <span id="val-thrust">0%</span></div>
+          <div class="hud-alt-badge">ALT: <span id="val-alt">0.0 m</span></div>
+        </div>
+
+        <!-- DRONE TELEMETRY METRICS ROW -->
+        <div class="drone-telemetry-row">
+          <div class="telem-box">
+            <span class="telem-label">COMMAND</span>
+            <span class="telem-value" id="val-telem-cmd">STOP</span>
+          </div>
+          <div class="telem-box">
+            <span class="telem-label">MOTOR POWER</span>
+            <span class="telem-value" id="val-telem-power">0 PWM</span>
+          </div>
+          <div class="telem-box">
+            <span class="telem-label">TAKEOFF LOCK</span>
+            <span class="telem-value text-green" id="val-telem-lock">READY</span>
+          </div>
+          <div class="telem-box">
+            <span class="telem-label">CONFIRMATION</span>
+            <span class="telem-value" id="val-telem-conf">200 ms</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- BOTTOM CONTROL DECK & TESTING CONTROLS -->
+    <footer class="controls-deck">
+      <div class="controls-group source-controls">
+        <span class="ctrl-group-title">INPUT MODE:</span>
+        <button class="btn btn-mode active" id="btn-mode-replay" data-mode="REPLAY">
+          <span>🔄</span> Replay Session
+        </button>
+        <button class="btn btn-mode" id="btn-mode-sim" data-mode="SIMULATION">
+          <span>⚡</span> Live Simulator
+        </button>
+        <button class="btn btn-mode" id="btn-mode-hw" data-mode="HARDWARE">
+          <span>📡</span> Connect BLE Device
+        </button>
+      </div>
+
+      <div class="controls-group test-controls">
+        <span class="ctrl-group-title">TRIGGER MUSCLE CONTRACTION:</span>
+        <button class="btn btn-action" id="btn-flex-left" title="Simulate Left Muscle Flex (Key: A)">
+          <span class="key-hint">A</span> Flex Left
+        </button>
+        <button class="btn btn-action" id="btn-flex-right" title="Simulate Right Muscle Flex (Key: D)">
+          <span class="key-hint">D</span> Flex Right
+        </button>
+        <button class="btn btn-action btn-highlight" id="btn-flex-both" title="Simulate Dual Flex (Key: W or Space)">
+          <span class="key-hint">W</span> Dual Flex (Takeoff)
+        </button>
+        <button class="btn btn-action" id="btn-relax" title="Relax Muscles (Key: S)">
+          <span class="key-hint">S</span> Relax
+        </button>
+      </div>
+
+      <div class="controls-group flight-controls">
+        <span class="ctrl-group-title">SAFETY & FLIGHT:</span>
+        <button class="btn btn-arm" id="btn-toggle-arm">ARM DRONE</button>
+        <button class="btn btn-takeoff" id="btn-manual-takeoff">TAKEOFF</button>
+        <button class="btn btn-danger" id="btn-estop">EMERGENCY STOP</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
